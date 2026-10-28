@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>8C Məktəb & AI</title>
+  <style>
+    :root {
+      --bg-color: #f4f6f9;
+      --card-bg: #ffffff;
+      --text-color: #333333;
+      --title-color: #2c3e50;
+      --sub-title-color: #3498db;
+      --border-color: #e0e0e0;
+      --nav-bg: #ffffff;
+      --modal-overlay: rgba(0,0,0,0.5);
+    }
+
+    body.dark-mode {
+      --bg-color: #121212;
+      --card-bg: #1e1e1e;
+      --text-color: #e0e0e0;
+      --title-color: #ffffff;
+      --sub-title-color: #64b5f6;
+      --border-color: #333333;
+      --nav-bg: #1a1a1a;
+      --modal-overlay: rgba(0,0,0,0.7);
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 15px 15px 90px 15px;
+      text-align: center;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: flex-end;
+      max-width: 400px;
+      margin: 0 auto 10px auto;
+    }
+
+    .settings-btn {
+      background: var(--card-bg);
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+      padding: 8px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      max-width: 400px;
+      margin: auto;
+      text-align: left;
+    }
+
+    h1 {
+      color: var(--title-color);
+      font-size: 22px;
+      margin-top: 0;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    h3 {
+      color: var(--sub-title-color);
+      margin-top: 15px;
+      margin-bottom: 8px;
+      font-size: 16px;
+      border-bottom: 2px solid var(--sub-title-color);
+      padding-bottom: 4px;
+    }
+
+    ol {
+      padding-left: 20px;
+      margin: 0;
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    .version {
+      margin-top: 25px;
+      font-size: 13px;
+      opacity: 0.5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .ai-notice {
+      background: rgba(241, 196, 15, 0.15);
+      border: 1px dashed #f1c40f;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 15px;
+      text-align: center;
+      color: var(--text-color);
+    }
+
+    .ai-hint {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 8px;
+      display: block;
+      text-align: center;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--card-bg);
+      color: var(--text-color);
+    }
+
+    .send-btn {
+      background: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .ai-response {
+      background: rgba(52, 152, 219, 0.1);
+      border-left: 4px solid #3498db;
+      padding: 12px;
+      border-radius: 4px;
+      margin-top: 10px;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .student-list-container {
+      margin-top: 10px;
+    }
+
+    .student-item {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .student-item:last-child {
+      border-bottom: none;
+    }
+
+    .student-number {
+      background: var(--sub-title-color);
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .navbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--nav-bg);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      z-index: 100;
+    }
+
+    .nav-item {
+      background: none;
+      border: none;
+      color: var(--text-color);
+      font-size: 13px;
+      cursor: pointer;
+      opacity: 0.6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .nav-item.active {
+      opacity: 1;
+      color: var(--sub-title-color);
+      font-weight: bold;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: var(--modal-overlay);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 12px;
+      width: 80%;
+      max-width: 300px;
+      text-align: left;
+    }
+
+    .setting-item {
+      margin: 15px 0;
+    }
+
+    select, .theme-toggle-btn {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-color);
+      color: var(--text-color);
+    }
+
+    .close-btn {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .designer-credit {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: bold;
+      color: #3498db;
+    }
+
+
+    /* Növbətçi bölməsinin ayrıca 3D-geometrik dizaynı */
+    #duty-tab .card {
+      max-width: 460px;
+      padding: 20px 16px 24px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 95% 2%, rgba(124, 92, 255, .17), transparent 26%),
+        radial-gradient(circle at 0% 35%, rgba(0, 198, 190, .13), transparent 25%),
+        var(--card-bg);
+    }
+    #duty-tab h1 {
+      font-size: 25px;
+      letter-spacing: -.6px;
+      margin: 3px 0 8px;
+    }
+    #duty-tab .duty-subtitle {
+      font-size: 13px;
+      opacity: .72;
+      text-align: center;
+      margin: 0 auto 20px;
+      max-width: 270px;
+      line-height: 1.5;
+    }
+    #duty-tab .duty-day-card {
+      --duty-accent: #7967f8;
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      margin: 15px 0;
+      padding: 15px 13px 12px;
+      border: 1px solid rgba(130, 130, 160, .18);
+      border-radius: 22px;
+      background: linear-gradient(145deg, rgba(255,255,255,.94), rgba(239,242,255,.78));
+      box-shadow: 0 9px 20px rgba(35, 43, 85, .10), inset 0 1px 0 rgba(255,255,255,.9);
+      text-align: left;
+    }
+    body.dark-mode #duty-tab .duty-day-card {
+      background: linear-gradient(145deg, #292b3d, #202231);
+      border-color: rgba(255,255,255,.08);
+      box-shadow: 0 9px 20px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.05);
+    }
+    #duty-tab .duty-day-card::before,
+    #duty-tab .duty-day-card::after {
+      content: '';
+      position: absolute;
+      z-index: -1;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    #duty-tab .duty-day-card::before {
+      width: 105px; height: 105px; right: -34px; top: -43px;
+      background: radial-gradient(circle at 32% 28%, rgba(255,255,255,.95), var(--duty-accent) 38%, rgba(80,70,190,.12) 76%);
+      box-shadow: inset -8px -10px 17px rgba(36,35,92,.16), 0 7px 14px rgba(60,50,120,.12);
+      opacity: .82;
+    }
+    #duty-tab .duty-day-card::after {
+      width: 28px; height: 28px; right: 48px; top: 31px;
+      background: linear-gradient(145deg, #fff, var(--duty-accent));
+      box-shadow: inset -3px -4px 7px rgba(50,40,110,.16), 0 4px 8px rgba(40,40,90,.12);
+      opacity: .72;
+    }
+    #duty-tab .duty-day-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 13px;
+      color: #29264b;
+      font-size: 16px;
+      font-weight: 800;
+      position: relative;
+      z-index: 1;
+    }
+    body.dark-mode #duty-tab .duty-day-title { color: #f3f1ff; }
+    #duty-tab .duty-day-icon {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 35px; height: 35px; flex: 0 0 35px;
+      border-radius: 12px;
+      color: white;
+      background: linear-gradient(145deg, #a69aff, var(--duty-accent));
+      box-shadow: inset 2px 2px 4px rgba(255,255,255,.45), inset -3px -4px 7px rgba(35,25,100,.2), 0 5px 10px rgba(70,55,150,.18);
+    }
+    #duty-tab .duty-count {
+      margin-left: auto;
+      padding: 5px 9px;
+      border-radius: 99px;
+      background: rgba(125,110,245,.13);
+      color: var(--duty-accent);
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    #duty-tab .duty-student-card {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      position: relative;
+      padding: 9px 10px;
+      margin: 7px 0 0;
+      border-radius: 15px;
+      background: rgba(255,255,255,.77);
+      border: 1px solid rgba(135,135,165,.12);
+      color: #33334a;
+      font-size: 14px;
+      font-weight: 650;
+      box-shadow: 0 3px 7px rgba(40,40,80,.035);
+    }
+    body.dark-mode #duty-tab .duty-student-card {
+      background: rgba(255,255,255,.045); color: #f0eff8; border-color: rgba(255,255,255,.06);
+    }
+    #duty-tab .duty-orb {
+      width: 31px; height: 31px; flex: 0 0 31px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 50%;
+      color: white; font-size: 11px; font-weight: 900;
+      background: radial-gradient(circle at 30% 24%, #fff 0%, #c4c0ff 12%, var(--duty-accent) 47%, #4740a2 100%);
+      box-shadow: inset -3px -4px 6px rgba(24,20,75,.25), inset 2px 2px 4px rgba(255,255,255,.65), 0 4px 7px rgba(75,60,155,.18);
+    }
+    #duty-tab .duty-student-name { line-height: 1.35; }
+    #duty-tab .duty-student-label { margin-left: auto; font-size: 10px; opacity: .48; }
+    #duty-tab .duty-day-card:nth-child(5n + 1) { --duty-accent: #7867f7; }
+    #duty-tab .duty-day-card:nth-child(5n + 2) { --duty-accent: #19aaa4; }
+    #duty-tab .duty-day-card:nth-child(5n + 3) { --duty-accent: #f08a58; }
+    #duty-tab .duty-day-card:nth-child(5n + 4) { --duty-accent: #db68a4; }
+    #duty-tab .duty-day-card:nth-child(5n) { --duty-accent: #4d9ee8; }
+
+
+    /* Frutiger Aero mövzusu: bütün tətbiqə yumşaq şüşə, su və hava effekti */
+    body {
+      font-family: "Trebuchet MS", Arial, sans-serif;
+      background:
+        radial-gradient(circle at 12% 12%, rgba(255,255,255,.95) 0 3px, transparent 5px),
+        radial-gradient(circle at 88% 22%, rgba(255,255,255,.8) 0 5px, transparent 8px),
+        radial-gradient(ellipse at 8% 5%, rgba(103,225,255,.5), transparent 34%),
+        radial-gradient(ellipse at 92% 78%, rgba(80,220,178,.34), transparent 35%),
+        linear-gradient(145deg, #eafcff 0%, #d7f5ff 42%, #e4fff3 100%);
+      background-attachment: fixed;
+    }
+    body.dark-mode {
+      background:
+        radial-gradient(circle at 12% 12%, rgba(255,255,255,.13) 0 3px, transparent 5px),
+        radial-gradient(circle at 88% 22%, rgba(255,255,255,.12) 0 5px, transparent 8px),
+        radial-gradient(ellipse at 8% 5%, rgba(22,135,180,.28), transparent 34%),
+        radial-gradient(ellipse at 92% 78%, rgba(20,155,115,.2), transparent 35%),
+        linear-gradient(145deg, #102d3c 0%, #153d50 48%, #123b35 100%);
+      background-attachment: fixed;
+    }
+    .card, #duty-tab .card, .settings-btn, .nav-item, .student-item,
+    .schedule-day, .modal-content, .ai-box, input, select, textarea {
+      border: 1px solid rgba(255,255,255,.72) !important;
+      background-color: rgba(255,255,255,.68);
+      backdrop-filter: blur(14px) saturate(1.25);
+      -webkit-backdrop-filter: blur(14px) saturate(1.25);
+      box-shadow: 0 10px 26px rgba(37,133,165,.12), inset 0 1px 0 rgba(255,255,255,.9);
+    }
+    body.dark-mode .card, body.dark-mode #duty-tab .card,
+    body.dark-mode .settings-btn, body.dark-mode .nav-item,
+    body.dark-mode .student-item, body.dark-mode .schedule-day,
+    body.dark-mode .modal-content, body.dark-mode .ai-box,
+    body.dark-mode input, body.dark-mode select, body.dark-mode textarea {
+      background-color: rgba(20,52,66,.72);
+      border-color: rgba(190,245,255,.14) !important;
+      box-shadow: 0 10px 26px rgba(0,0,0,.15), inset 0 1px 0 rgba(255,255,255,.07);
+    }
+    .settings-btn, .nav-item, button { border-radius: 18px; transition: transform .18s ease, box-shadow .18s ease; }
+    button:active { transform: scale(.97); }
+    .nav-item.active { background: linear-gradient(135deg, #55d8f2, #4bd7a1) !important; color: #06485b !important; }
+    h1 { text-shadow: 0 2px 0 rgba(255,255,255,.7); }
+    body.dark-mode h1 { text-shadow: none; }
+    #duty-tab .duty-day-card {
+      background: linear-gradient(145deg, rgba(255,255,255,.86), rgba(213,249,255,.67));
+      border-color: rgba(255,255,255,.9);
+      box-shadow: 0 12px 24px rgba(39,137,166,.15), inset 0 2px 0 rgba(255,255,255,.96);
+    }
+    body.dark-mode #duty-tab .duty-day-card {
+      background: linear-gradient(145deg, rgba(37,71,88,.92), rgba(26,58,66,.86));
+      border-color: rgba(190,245,255,.14);
+    }
+    #duty-tab .duty-student-card { border-radius: 18px; }
+    @media (prefers-reduced-motion: no-preference) {
+      #duty-tab .duty-day-card { animation: aeroFloat .55s ease both; }
+      #duty-tab .duty-day-card:nth-child(2) { animation-delay: .04s; }
+      #duty-tab .duty-day-card:nth-child(3) { animation-delay: .08s; }
+      @keyframes aeroFloat { from { opacity: .65; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+    }
+
+
+/* Frutiger Aero Güzgü Modu */
+.mirror-launch{position:fixed;z-index:800;bottom:66px;left:50%;transform:translateX(-50%);border:1px solid rgba(255,255,255,.9);border-radius:18px;padding:6px 10px;color:#17627a;font-weight:700;font-size:11px;background:linear-gradient(135deg,rgba(255,255,255,.88),rgba(201,247,255,.82) 65%,rgba(200,255,228,.85));box-shadow:0 3px 9px #008fc822,inset 0 1px 2px #ffffffd9;white-space:nowrap;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+/* Güzgü düyməsi aşağı naviqasiya ilə yanaşı, yığcam görünür */
+@media(min-width:360px){.mirror-launch{left:auto;right:8px;bottom:64px;transform:none;padding:6px 9px;font-size:11px}}
+.navbar{padding:8px 0 7px;gap:2px;align-items:center}
+.nav-item{min-width:0;flex:1;padding:3px 1px;font-size:11px;gap:3px}
+.nav-item span:first-child{font-size:16px}
+
+.mirror-modal{display:none;position:fixed;inset:0;z-index:9999;background:rgba(14,83,110,.28);overflow:auto;padding:18px;box-sizing:border-box;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+.mirror-modal.open{display:block}.mirror-shell{max-width:520px;margin:0 auto;position:relative;padding:14px;border:1px solid #ffffffd9;border-radius:25px;background:linear-gradient(145deg,rgba(255,255,255,.9),rgba(218,250,255,.86) 60%,rgba(218,255,237,.84));box-shadow:0 8px 22px #006b9b25,inset 0 1px 5px #fff;backdrop-filter:blur(12px)}
+.mirror-bubbles{position:absolute;inset:0;overflow:hidden;pointer-events:none;border-radius:30px}.mirror-bubbles i{position:absolute;width:25px;height:25px;border-radius:50%;border:2px solid #ffffffb8;background:radial-gradient(circle at 30% 25%,#fff,#ffffff35 45%,#4ce8ff66);box-shadow:inset -3px -4px 8px #008ec744,0 0 12px #fff8;animation:bubbleFloat 5s ease-in-out infinite}.mirror-bubbles i:nth-child(1){left:5%;top:22%;width:34px;height:34px}.mirror-bubbles i:nth-child(2){right:7%;top:12%;width:18px;height:18px;animation-delay:1s}.mirror-bubbles i:nth-child(3){right:12%;bottom:18%;width:42px;height:42px;animation-delay:2s}.mirror-bubbles i:nth-child(4){left:12%;bottom:10%;width:16px;height:16px;animation-delay:1.5s}@keyframes bubbleFloat{50%{transform:translateY(-13px)}}
+.mirror-head{color:#17627a;text-shadow:0 1px 0 #fff;margin:4px 0 8px;font-size:22px}.mirror-desc{color:#367f91;margin:0 0 12px;font-size:14px}.mirror-view{position:relative;border:2px solid #ffffffed;border-radius:23px;overflow:hidden;background:linear-gradient(145deg,#d7f6fb,#9bdde9);box-shadow:0 4px 13px #005a9d25;min-height:240px;aspect-ratio:3/4;display:flex;align-items:center;justify-content:center}.mirror-view video{width:100%;height:100%;position:absolute;inset:0;object-fit:cover;transform:scaleX(-1);display:none}.mirror-placeholder{color:#286b7e;padding:24px;line-height:1.5;text-shadow:0 1px 0 #fff}.mirror-controls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:15px}.mirror-controls button{border:1px solid #ffffffd9;border-radius:18px;padding:10px 12px;font-weight:700;font-size:13px;color:#17627a;background:linear-gradient(135deg,#faffff,#c9f3f8 65%,#d8ffeb);box-shadow:0 3px 8px #005e9122}.mirror-controls .mirror-close{background:linear-gradient(135deg,#f5fbff,#d8eaf2);color:#426a7b}.mirror-note{color:#39798a;font-size:12px;margin-top:10px}.mirror-status{color:#23788b;font-weight:700;margin-top:10px;font-size:13px}
+
+
+    .wheel-modal{display:none;position:fixed;inset:0;z-index:10001;background:#07131bd9;overflow:auto;padding:14px;box-sizing:border-box;align-items:flex-start;justify-content:center}
+    .wheel-modal.open{display:flex}.wheel-shell{width:min(100%,560px);margin:auto;padding:16px;border-radius:25px;background:linear-gradient(145deg,#f7ffff,#d9f6f8 55%,#dfffe9);color:#164c5c;box-shadow:0 10px 35px #0005;border:1px solid #fff}
+    .wheel-top{display:flex;align-items:center;justify-content:space-between;gap:10px}.wheel-top h2{margin:4px 0 12px}.wheel-close{border:0;border-radius:14px;padding:9px 12px;background:#e3f4f8;color:#145367;font-weight:bold}
+    .wheel-stage{position:relative;width:min(82vw,360px);margin:8px auto 16px}.wheel-pointer{position:absolute;z-index:2;left:50%;top:-5px;transform:translateX(-50%);width:0;height:0;border-left:17px solid transparent;border-right:17px solid transparent;border-top:34px solid #ff514c;filter:drop-shadow(0 2px 2px #0004)}
+    #wheel-canvas{display:block;width:100%;height:auto;border-radius:50%;box-shadow:0 5px 18px #006b7a33;border:5px solid #fff}
+    .wheel-result{min-height:28px;text-align:center;font-size:21px;font-weight:800;margin:10px 0;color:#087c87;overflow-wrap:anywhere}.wheel-controls{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.wheel-controls input{flex:1;min-width:130px;border:1px solid #a8dce3;border-radius:14px;padding:12px;background:#fff;color:#164c5c}.wheel-controls button,.wheel-spin{border:1px solid #fff;border-radius:14px;padding:11px 14px;font-weight:800;background:linear-gradient(135deg,#fff,#b9f1f6,#d8ffe5);color:#13586a}.wheel-spin{display:block;width:100%;font-size:17px;padding:14px}.wheel-list{display:flex;flex-direction:column;gap:7px;margin-top:12px}.wheel-name-row{display:flex;align-items:center;gap:10px;background:#ffffffc9;border:1px solid #d1f0ef;border-radius:13px;padding:9px 10px}.wheel-name-row .wheel-name{flex:1;overflow-wrap:anywhere}.wheel-delete{border:0;border-radius:10px;background:#fff0ef;color:#f0443e;font-size:20px;padding:5px 10px}.wheel-foot{font-size:12px;opacity:.8;margin-top:10px}
+    body.dark-mode .wheel-shell{background:linear-gradient(145deg,#142b35,#173e48);color:#e2fbff}body.dark-mode .wheel-name-row{background:#204550;border-color:#35636b}body.dark-mode .wheel-controls input{background:#15313a;color:#fff}
+
+  </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <button class="settings-btn" onclick="openSettings()">⚙️ <span id="txt-settings">Ayarlar</span></button>
+</div>
+
+<div id="schedule-tab" class="tab-content active">
+  <div class="card">
+    <h1 id="txt-title">8C Həftəlik Dərs Cədvəli</h1>
+    <div id="lessons-list"></div>
+    
+    <div class="version">
+      <span id="txt-version">Sürüm: 100.68.99</span>
+      <span>ⓘ</span>
+    </div>
+  </div>
+</div>
+
+<div id="ai-tab" class="tab-content">
+  <div class="card">
+    <h1 id="txt-ai-title">8C AI Köpəkçi</h1>
+    
+    <div class="ai-notice" id="txt-ai-notice">
+      📢 Bəziləri yoxdursa məktəbdə mənə deyin qoyaram və ya geri bildirim üçün məktəbdə mənə deyə bilərsiniz!
+    </div>
+
+    <span class="ai-hint" id="txt-ai-hint">(Sadece uşaqlarin adini deyin!!)</span>
+    
+    <div class="input-group">
+      <input type="text" id="student-input" placeholder="Ad..." onkeypress="if(event.key === 'Enter') askAI()">
+      <button class="send-btn" onclick="askAI()" id="txt-send-btn">Soruş</button>
+    </div>
+
+    <div id="ai-output" class="ai-response" style="display: none;"></div>
+
+    <div class="version">
+      <span id="txt-version-2">Sürüm: 100.68.99</span>
+      <span>ⓘ</span>
+    </div>
+  </div>
+</div>
+
+<div id="students-tab" class="tab-content">
+  <div class="card">
+    <h1 id="txt-students-title">8C Şagird Siyahısı</h1>
+    <div id="students-list" class="student-list-container"></div>
+
+    <div class="version">
+      <span id="txt-version-3">Sürüm: 100.68.99</span>
+      <span>ⓘ</span>
+    </div>
+  </div>
+</div>
+
+<div id="duty-tab" class="tab-content">
+  <div class="card">
+    <h1>Növbətçi siyahısı</h1>
+    <p class="duty-subtitle">Həftənin planı · 3D fiqurlu yeni görünüş</p>
+    <div id="duty-list" class="student-list-container"></div>
+    <div class="version"><span>Sürüm: 100.68.99</span><span>ⓘ</span></div>
+  </div>
+</div>
+
+<div class="navbar">
+  <button class="nav-item active" id="nav-schedule" onclick="switchTab('schedule')">
+    <span>📅</span>
+    <span id="txt-nav-schedule">Cədvəl</span>
+  </button>
+  <button class="nav-item" id="nav-ai" onclick="switchTab('ai')">
+    <span>🤖</span>
+    <span id="txt-nav-ai">AI Menyusu</span>
+  </button>
+  <button class="nav-item" id="nav-students" onclick="switchTab('students')">
+    <span>👨‍🎓</span>
+    <span id="txt-nav-students">Şagirdlər</span>
+  </button>
+  <button class="nav-item" id="nav-duty" onclick="switchTab('duty')">
+    <span>🧹</span>
+    <span id="txt-nav-duty">Növbətçi</span>
+  </button>
+</div>
+
+<div class="modal" id="settings-modal">
+  <div class="modal-content">
+    <h2 id="txt-settings-title">Ayarlar</h2>
+    
+    <div class="setting-item">
+      <label id="txt-lang-label">Dil / Language:</label>
+      <select id="lang-select" onchange="changeLanguage(this.value)">
+        <option value="az">Azərbaycan dili</option>
+        <option value="tr">Türkçe</option>
+        <option value="en">English</option>
+        <option value="ru">Русский</option>
+      </select>
+    </div>
+
+    <div class="setting-item">
+      <button class="theme-toggle-btn" onclick="openWheel()" id="txt-wheel-open">🎡 Çarx</button>
+    </div>
+
+    <div class="setting-item">
+      <label id="txt-theme-label">Rejim / Theme:</label>
+      <button class="theme-toggle-btn" onclick="toggleTheme()" id="theme-btn">🌙 Qaranlıq Rejim</button>
+    </div>
+
+    <div class="designer-credit">
+      DESIGNED BY: İBRAHİM N
+    </div>
+
+    <button class="close-btn" onclick="closeSettings()" id="txt-close-btn">Bağla</button>
+  </div>
+</div>
+
+
+<div class="wheel-modal" id="wheel-modal" role="dialog" aria-modal="true" aria-label="🎡 Çarx">
+ <div class="wheel-shell">
+  <div class="wheel-top"><h2 id="wheel-title">🎡 Ad çarxı</h2><button class="wheel-close" onclick="closeWheel()">✕</button></div>
+  <div class="wheel-stage"><div class="wheel-pointer"></div><canvas id="wheel-canvas" width="600" height="600"></canvas></div>
+  <div class="wheel-result" id="wheel-result" aria-live="polite"></div>
+  <div class="wheel-controls"><button type="button" class="wheel-spin" id="wheel-spin" onclick="spinWheel(); return false;">🎯 Fırlat!</button></div>
+  <div class="wheel-controls"><input id="wheel-name-input" type="text" placeholder="Yeni şagirdin adı" maxlength="70"><button type="button" id="wheel-add" onclick="addWheelName(); return false;">＋ Əlavə et</button></div>
+  <div id="wheel-list" class="wheel-list"></div>
+  <p class="wheel-foot" id="wheel-foot">Adları əlavə et və ya qırmızı zibil qabı ilə sil. Tətbiqi yenidən açanda 29 ad yenidən gəlir.</p>
+ </div>
+</div>
+
+<script>
+  var currentLang = 'az';
+
+  var translations = {
+    az: {
+      title: "8C Həftəlik Dərs Cədvəli",
+      aiTitle: "8C AI Köpəkçi",
+      studentsTitle: "8C Şagird Siyahısı",
+      aiNotice: "📢 Bəziləri yoxdursa məktəbdə mənə deyin qoyaram və ya geri bildirim üçün məktəbdə mənə deyə bilərsiniz!",
+      aiHint: "(Sadece uşaqlarin adini deyin!!)",
+      placeholder: "Şagird adını yazın...",
+      sendBtn: "Soruş",
+      navSchedule: "Cədvəl",
+      navAi: "AI Menyusu",
+      navStudents: "Şagirdlər", navDuty: "Növbətçi",
+      settings: "Ayarlar",
+      settingsTitle: "Ayarlar",
+      langLabel: "Dil:",
+      themeLabel: "Rejim:",
+      darkBtn: "🌙 Qaranlıq Rejim",
+      lightBtn: "☀️ Açıq Rejim",
+      closeBtn: "Bağla",
+      version: "Sürüm: 100.68.99",
+      wheel: "🎡 Çarx", wheelTitle: "🎡 Ad çarxı", wheelSpin: "🎯 Fırlat!", wheelAdd: "＋ Əlavə et", wheelPlaceholder: "Yeni şagirdin adı", wheelFoot: "Adları əlavə et və ya qırmızı zibil qabı ilə sil. Tətbiqi yenidən açanda 29 ad yenidən gəlir.", wheelEmpty: "Əvvəlcə ad əlavə et!", wheelWinner: "🎉 Seçilən: ", wheelNoNames: "Çarxda ad yoxdur!",
+      unknownStudent: "Sadece uşaqlarin adini deyin!! Bu adı tam tapa bilmədim.",
+      days: {
+        1: "1-ci gün (Bazar ertəsi)", 2: "2-ci gün (Çərşənbə axşamı)", 3: "3-cü gün (Çərşənbə)",
+        4: "4-cü gün (Cümə axşamı)", 5: "5-ci gün (Cümə)"
+      },
+      lessons: {
+        "Texnologiya": "Texnologiya", "Riyaziyyat": "Riyaziyyat", "Rəqəmsal bacarıqlar": "Rəqəmsal bacarıqlar",
+        "Fizika": "Fizika", "Kimya": "Kimya", "Azərbaycan dili": "Azərbaycan dili", "Azərbaycan tarixi": "Azərbaycan tarixi",
+        "Ədəbiyyat": "Ədəbiyyat", "Fiziki tərbiyə": "Fiziki tərbiyə", "Coğrafiya": "Coğrafiya", "İngilis dili": "İngilis dili",
+        "Biologiya": "Biologiya", "Ümumi tarix": "Ümumi tarix", "Musiqi": "Musiqi", "Təsviri incəsənət": "Təsviri incəsənət",
+        "Rus dili": "Rus dili", "STEAM": "STEAM"
+      }
+    },
+    tr: {
+      title: "8C Haftalık Ders Programı",
+      aiTitle: "8C AI Asistanı",
+      studentsTitle: "8C Öğrenci Listesi",
+      aiNotice: "📢 Eksik olanlar varsa okulda bana söyleyin ekleyeyim veya geri bildirim için okulda söyleyebilirsiniz!",
+      aiHint: "(Sadece öğrencilerin adını söyleyin!!)",
+      placeholder: "Öğrenci adını yazın...",
+      sendBtn: "Sor",
+      navSchedule: "Program",
+      navAi: "AI Menüsü",
+      navStudents: "Öğrenciler", navDuty: "Nöbetçi",
+      settings: "Ayarlar",
+      settingsTitle: "Ayarlar",
+      langLabel: "Dil:",
+      themeLabel: "Tema:",
+      darkBtn: "🌙 Karanlık Mod",
+      lightBtn: "☀️ Aydınlık Mod",
+      closeBtn: "Kapat",
+      version: "Sürüm: 100.68.99",
+      wheel: "🎡 Çarx", wheelTitle: "🎡 Ad çarxı", wheelSpin: "🎯 Fırlat!", wheelAdd: "＋ Əlavə et", wheelPlaceholder: "Yeni şagirdin adı", wheelFoot: "Adları əlavə et və ya qırmızı zibil qabı ilə sil. Tətbiqi yenidən açanda 29 ad yenidən gəlir.", wheelEmpty: "Əvvəlcə ad əlavə et!", wheelWinner: "🎉 Seçilən: ", wheelNoNames: "Çarxda ad yoxdur!",
+      unknownStudent: "Sadece öğrencilerin adını söyleyin!! Bu ismi bulamadım.",
+      days: {
+        1: "1. Gün (Pazartesi)", 2: "2. Gün (Salı)", 3: "3. Gün (Çarşamba)",
+        4: "4. Gün (Perşembe)", 5: "5. Gün (Cuma)"
+      },
+      lessons: {
+        "Texnologiya": "Teknoloji", "Riyaziyyat": "Matematik", "Rəqəmsal bacarıqlar": "Dijital Beceriler",
+        "Fizika": "Fizik", "Kimya": "Kimya", "Azərbaycan dili": "Azerbaycan Dili", "Azərbaycan tarixi": "Azerbaycan Tarihi",
+        "Ədəbiyyat": "Edebiyat", "Fiziki tərbiyə": "Beden Eğitimi", "Coğrafiya": "Coğrafya", "İngilis dili": "İngilizce",
+        "Biologiya": "Biyoloji", "Ümumi tarix": "Genel Tarih", "Musiqi": "Müzik", "Təsviri incəsənət": "Görsel Sanatlar",
+        "Rus dili": "Rusça", "STEAM": "STEAM"
+      }
+    },
+    en: {
+      title: "8C Weekly Schedule",
+      aiTitle: "8C AI Assistant",
+      studentsTitle: "8C Student List",
+      aiNotice: "📢 If anyone is missing, tell me at school and I will add them!",
+      aiHint: "(Only say students' names!!)",
+      placeholder: "Enter student name...",
+      sendBtn: "Ask",
+      navSchedule: "Schedule",
+      navAi: "AI Menu",
+      navStudents: "Students", navDuty: "Duty",
+      settings: "Settings",
+      settingsTitle: "Settings",
+      langLabel: "Language:",
+      themeLabel: "Theme:",
+      darkBtn: "🌙 Dark Mode",
+      lightBtn: "☀️ Light Mode",
+      closeBtn: "Close",
+      version: "Version: 100.68.99",
+      wheel: "🎡 Wheel", wheelTitle: "🎡 Name wheel", wheelSpin: "🎯 Spin!",  wheelAdd: "＋ Add", wheelPlaceholder: "New student name", wheelFoot: "Add names or delete them with the red bin. The 29 names return when you reopen the app.", wheelEmpty: "Add a name first!", wheelWinner: "🎉 Selected: ", wheelNoNames: "There are no names on the wheel!",
+      unknownStudent: "Only say students' names!! Could not find this name.",
+      days: {
+        1: "Day 1 (Monday)", 2: "Day 2 (Tuesday)", 3: "Day 3 (Wednesday)",
+        4: "Day 4 (Thursday)", 5: "Day 5 (Friday)"
+      },
+      lessons: {
+        "Texnologiya": "Technology", "Riyaziyyat": "Math", "Rəqəmsal bacarıqlar": "Digital Skills",
+        "Fizika": "Physics", "Kimya": "Chemistry", "Azərbaycan dili": "Azerbaijani", "Azərbaycan tarixi": "History of Az.",
+        "Ədəbiyyat": "Literature", "Fiziki tərbiyə": "PE", "Coğrafiya": "Geography", "İngilis dili": "English",
+        "Biologiya": "Biology", "Ümumi tarix": "World History", "Musiqi": "Music", "Təsviri incəsənət": "Art",
+        "Rus dili": "Russian", "STEAM": "STEAM"
+      }
+    },
+    ru: {
+      title: "Расписание 8C на неделю", aiTitle: "Помощник 8C AI", studentsTitle: "Список учеников 8C",
+      aiNotice: "📢 Если кого-то нет в списке, сообщите мне в школе!", aiHint: "(Введите имя ученика)", placeholder: "Введите имя ученика...", sendBtn: "Спросить",
+      navSchedule: "Расписание", navAi: "Меню AI", navStudents: "Ученики", navDuty: "Дежурство", settings: "Настройки", settingsTitle: "Настройки", langLabel: "Язык:", themeLabel: "Тема:",
+      darkBtn: "🌙 Тёмный режим", lightBtn: "☀️ Светлый режим", closeBtn: "Закрыть", version: "Версия: 100.68.99",
+      wheel: "🎡 Колесо", wheelTitle: "🎡 Колесо имён", wheelSpin: "🎯 Крутить!",  wheelAdd: "＋ Добавить", wheelPlaceholder: "Имя ученика", wheelFoot: "Добавляйте имена или удаляйте красной корзиной. При повторном запуске вернутся 29 имён.", wheelEmpty: "Сначала добавьте имя!", wheelWinner: "🎉 Выбран: ", wheelNoNames: "На колесе нет имён!",
+      unknownStudent: "Не удалось найти это имя.", days: {1:"День 1 (Понедельник)",2:"День 2 (Вторник)",3:"День 3 (Среда)",4:"День 4 (Четверг)",5:"День 5 (Пятница)"},
+      lessons: {"Texnologiya":"Технология","Riyaziyyat":"Математика","Rəqəmsal bacarıqlar":"Цифровые навыки","Fizika":"Физика","Kimya":"Химия","Azərbaycan dili":"Азербайджанский язык","Azərbaycan tarixi":"История Азербайджана","Ədəbiyyat":"Литература","Fiziki tərbiyə":"Физкультура","Coğrafiya":"География","İngilis dili":"Английский язык","Biologiya":"Биология","Ümumi tarix":"Всемирная история","Musiqi":"Музыка","Təsviri incəsənət":"Искусство","Rus dili":"Русский язык","STEAM":"STEAM"}
+    }
+  };
+
+  var rawSchedule = {
+    1: ["Texnologiya", "Riyaziyyat", "Rəqəmsal bacarıqlar", "Fizika", "Kimya", "Azərbaycan dili", "Azərbaycan tarixi"],
+    2: ["Ədəbiyyat", "Azərbaycan dili", "Fiziki tərbiyə", "Coğrafiya", "İngilis dili", "Riyaziyyat", "Biologiya"],
+    3: ["Riyaziyyat", "Azərbaycan tarixi", "Rəqəmsal bacarıqlar", "Ümumi tarix", "Fizika", "Musiqi", "İngilis dili"],
+    4: ["Biologiya", "Kimya", "Fiziki tərbiyə", "Riyaziyyat", "Təsviri incəsənət", "Rus dili", "Ədəbiyyat"],
+    5: ["STEAM", "STEAM", "Biologiya", "Coğrafiya", "Riyaziyyat", "İngilis dili", "Azərbaycan dili"]
+  };
+
+  var studentData = [
+    { keys: ["ruhid", "babirov", "ruhid babirov", "ruhid bəbirov"], name: "Ruhid Bəbirov", desc: "Bilinmir?" },
+    { keys: ["dasdemirova", "zeyneb", "dasdemirova zeyneb", "daşdəmirova zeynəb"], name: "Daşdəmirova Zeynəb", desc: "Bilinmir?" },
+    { keys: ["cabbarova", "dilbura", "cabbarova dilbura"], name: "Cabbarova Dilbura", desc: "Bilinmir?" },
+    { keys: ["ehmedova", "sureyyaxanim", "sureyya", "əhmədova sürəyyaxanım"], name: "Əhmədova Sürəyyaxanım", desc: "0-1 sinifdən olmaq üzrə eyni sinifdədir." },
+    { keys: ["eliyev", "cahangir", "eliyev cahangir", "əliyev cahangir"], name: "Əliyev Cahangir", desc: "0-cı sinifdən eyni sinifdə oxuyur. Ən sevdiyi şey kimsəyə vurmaqdır, üstəlik boynuna!" },
+    { keys: ["eliyeva", "medine", "eliyeva medine", "əliyeva mədinə"], name: "Əliyeva Mədinə", desc: "Allah bilir, mənasız." },
+    { keys: ["helime", "həlime"], name: "Həlime", desc: "Duyğu X Həlime" },
+    { keys: ["ismayilzade", "huseyn", "ismayilzade huseyn", "ismayılzadə hüseyn"], name: "İsmayılzadə Hüseyn", desc: "Bu uşaq özü də bilmir nə etdiyini, amma nəsə edir. Hamı ilə dostdur, arası yaxşıdır." },
+    { keys: ["qafarli", "mehemmed", "qafarli mehemmed", "qafarlı məhəmməd"], name: "Qafarlı Məhəmməd", desc: "Epstein-in dostudur amma heç kimə demir. Duruşuna baxın... Əl-qol ilə gəzir, arada İbrahimi zorbalayır." },
+    { keys: ["mehemmedli", "cahangir", "mehemmedli cahangir", "məhəmmədli cahangir"], name: "Məhəmmədli Cahangir", desc: "Hamı ilə arası yaxşıdır, dərs ilə arası ortadır. Cahangir X Əli" },
+    { keys: ["mehemmedov", "eli", "mehemmedov eli", "məhəmmədov əli"], name: "Məhəmmədov Əli", desc: "Hamı ilə dostdur. Hansısa davaya getsən bu uşaq arada qaynayır. Ən sevdiyi şey şit zarafatdır, üstəlik vurmaq və yıxılmağa çalışmaq." },
+    { keys: ["duygu", "duyğu"], name: "Duyğu", desc: "Həlime X Duyğu" },
+    { keys: ["nagiyev", "mehemmed", "nagiyev mehemmed", "nağıyev məhəmməd"], name: "Nağıyev Məhəmməd", desc: "Yatır, yanında ya boş olur ya da Cahangir oturur. Hamı ilə arası yaxşıdır, yatmaqdan başqa heç bir özəlliyi yoxdur." },
+    { keys: ["nagiyev rza", "rza", "nağıyev rza"], name: "Nağıyev Rza", desc: "Bəziləri ilə arası pisdir amma belə də yaxşıdır. Şüvəndir, hamı ilə dost olmama səbəbi şüvən olmasıdır." },
+    { keys: ["nezerli", "ibrahim", "nezerli ibrahim", "nəzərli ibrahim"], name: "Nəzərli İbrahim", desc: "Hamı ilə dostdur (Hüseyn X İbrahim). Boyu balaca olduğu üçün sumkasından yemək oğurlanması məşhurdur. Hamı tərəfindən fitlənir (xüsusən Maarif tərəfindən)." },
+    { keys: ["maarif"], name: "Maarif", desc: "Niyə sinifkomdur bilinmir. Yemək və su, başqa heç nə bilmir. İdmandan qaçmaq ən sevdiyi şeydir. (İbrahimin yeməklərini AZ GÖTÜR!)" },
+    { keys: ["esma", "əsma"], name: "Əsma", desc: "Heç bir fikrim yoxdur amma tək oxuyan odu!" },
+    { keys: ["cesaret", "cəsarət"], name: "Cəsarət", desc: "Zaur robotu kimi sadəcə ən qabaqda oturur. Şüvənlik var və dərsləri yaxşı oxuyur amma robotdur." },
+    { keys: ["turan"], name: "Turan", desc: "Dost olmaq istəyir amma şit zarafatları var. Yaxşı dostdur, satmır. Yemək dəyişmək və su içmək üçün yalvarır." },
+    { keys: ["orxan"], name: "Orxan", desc: "Yaşayış desən yox, adamlıq desən yox. Hamı dost olmaq istəmir amma hamı danışır. Maariflə dava eləməkdən yaxın dura bilmir." },
+    { keys: ["tagizade", "murad", "tagizade murad", "tağızadə murad"], name: "Tağızadə Murad", desc: "Hamı ilə arası zordur, dost satmır. Tam dost axtaran üçün zordur, deyəcək söz yoxdur 10/10." }
+  ];
+
+  function renderSchedule() {
+    var t = translations[currentLang];
+    var lessonsListElement = document.getElementById("lessons-list");
+    if (!lessonsListElement) return;
+
+    var fullHtml = "";
+    for (var day = 1; day <= 5; day++) {
+      fullHtml += "<h3>" + t.days[day] + "</h3><ol>";
+      var dayLessons = rawSchedule[day] || [];
+      for (var i = 0; i < dayLessons.length; i++) {
+        var lessonKey = dayLessons[i];
+        var translatedLesson = t.lessons[lessonKey] || lessonKey;
+        fullHtml += "<li>" + translatedLesson + "</li>";
+      }
+      fullHtml += "</ol>";
+    }
+
+    lessonsListElement.innerHTML = fullHtml;
+  }
+
+  // Sinif siyahısı ayrıca saxlanılır ki, AI bölməsinin məlumatlarına toxunulmasın.
+  var classRoster = [
+    "Əhmədova Sürəyya", "Cəfərzadə Ramin", "Əmrahov İlkin",
+    "Həmidov Süleyman", "Qasımlı Tükəzban", "Muradova Duyğu",
+    "İmanmmədova Həlimə", "Soltanov Orxan", "Tağızadə Murad",
+    "Qafarlı Məhəmməd", "Haşımov İbrahim", "Ələkbərov Elgün",
+    "Nağıyev Məhəmməd", "Məmmədli Cahangir", "Əliyev Cahangir",
+    "Nağıyev Rza", "İsayeva Nuray", "İsmayılova İnci",
+    "İsmayılzadə Hüseyn", "Rəcəbli Əsma", "Səlimov Turan",
+    "Nəzərli İbrahim", "Məmmədov Əli", "Əliyeva Mədinə",
+    "Quliyev Əlövsət", "Əliyev Rəsul", "Rəhimov Cəsarət",
+    "İradə İsmayılova", "Pənahlı Maarif"
+  ];
+
+  function renderStudentList() {
+    var listElement = document.getElementById("students-list");
+    if (!listElement) return;
+    var listHtml = "";
+    for (var i = 0; i < classRoster.length; i++) {
+      listHtml += '<div class="student-item">' +
+        '<span class="student-number">' + (i + 1) + '</span>' +
+        '<span>' + classRoster[i] + '</span>' +
+        '</div>';
+    }
+    listElement.innerHTML = listHtml;
+  }
+
+  function changeLanguage(lang) {
+    currentLang = translations[lang] ? lang : "az";
+    lang = currentLang;
+    var t = translations[lang];
+    document.getElementById("lang-select").value = lang;
+    try { localStorage.setItem("8c-language", lang); } catch(e) {}
+    var wheelBtn = document.getElementById("txt-wheel-open"); if (wheelBtn) wheelBtn.innerText = t.wheel || "🎡 Çarx";
+    var wt = document.getElementById("wheel-title"); if (wt) wt.innerText = t.wheelTitle || "🎡 Çarx";
+    var ws = document.getElementById("wheel-spin"); if (ws) ws.innerText = t.wheelSpin || "🎯 Fırlat!";
+    var wa = document.getElementById("wheel-add"); if (wa) wa.innerText = t.wheelAdd || "＋ Əlavə et";
+    var wi = document.getElementById("wheel-name-input"); if (wi) wi.placeholder = t.wheelPlaceholder || "Yeni şagirdin adı";
+    var wf = document.getElementById("wheel-foot"); if (wf) wf.innerText = t.wheelFoot || "Adları əlavə et və ya sil.";
+    if (typeof renderWheelList === "function") renderWheelList();
+
+    document.getElementById("txt-title").innerText = t.title;
+    document.getElementById("txt-ai-title").innerText = t.aiTitle;
+    document.getElementById("txt-students-title").innerText = t.studentsTitle;
+    document.getElementById("txt-ai-notice").innerText = t.aiNotice;
+    document.getElementById("txt-ai-hint").innerText = t.aiHint;
+    document.getElementById("student-input").placeholder = t.placeholder;
+    document.getElementById("txt-send-btn").innerText = t.sendBtn;
+    document.getElementById("txt-nav-schedule").innerText = t.navSchedule;
+    document.getElementById("txt-nav-ai").innerText = t.navAi;
+    document.getElementById("txt-nav-students").innerText = t.navStudents;
+    document.getElementById("txt-nav-duty").innerText = t.navDuty || "Növbətçi";
+    document.getElementById("txt-settings").innerText = t.settings;
+    document.getElementById("txt-settings-title").innerText = t.settingsTitle;
+    document.getElementById("txt-lang-label").innerText = t.langLabel;
+    document.getElementById("txt-theme-label").innerText = t.themeLabel;
+    document.getElementById("txt-close-btn").innerText = t.closeBtn;
+    document.getElementById("txt-version").innerText = t.version;
+    document.getElementById("txt-version-2").innerText = t.version;
+    document.getElementById("txt-version-3").innerText = t.version;
+    document.querySelectorAll(".version span:first-child").forEach(function(el){ el.innerText = t.version; });
+    var dutyTitle=document.querySelector("#duty-tab h1"); if(dutyTitle) dutyTitle.innerText = ({az:"Növbətçi siyahısı",tr:"Nöbetçi listesi",en:"Duty roster",ru:"Список дежурных"})[lang];
+    var dutySub=document.querySelector(".duty-subtitle"); if(dutySub) dutySub.innerText = ({az:"Həftənin planı · 3D fiqurlu yeni görünüş",tr:"Haftalık plan · Yeni 3D görünüm",en:"Weekly plan · New 3D view",ru:"План недели · Новый вид 3D"})[lang];
+
+    var isDark = document.body.classList.contains("dark-mode");
+    document.getElementById("theme-btn").innerText = isDark ? t.lightBtn : t.darkBtn;
+
+    renderSchedule();
+    if (typeof renderWheel === "function") renderWheel();
+  }
+
+  function getLevenshteinDistance(a, b) {
+    var matrix = [];
+    for (var i = 0; i <= b.length; i++) matrix[i] = [i];
+    for (var j = 0; j <= a.length; j++) matrix[0][j] = j;
+
+    for (var i = 1; i <= b.length; i++) {
+      for (var j = 1; j <= a.length; j++) {
+        if (b.charAt(i - 1) === a.charAt(j - 1)) {
+          matrix[i][j] = matrix[i - 1][j - 1];
+        } else {
+          matrix[i][j] = Math.min(
+            matrix[i - 1][j - 1] + 1,
+            Math.min(matrix[i][j - 1] + 1, matrix[i - 1][j] + 1)
+          );
+        }
+      }
+    }
+    return matrix[b.length][a.length];
+  }
+
+  function normalizeText(text) {
+    return text.toLowerCase()
+      .replace(/[əə]/g, 'e')
+      .replace(/[ıi]/g, 'i')
+      .replace(/[şs]/g, 's')
+      .replace(/[ğg]/g, 'g')
+      .replace(/[çc]/g, 'c')
+      .replace(/[öo]/g, 'o')
+      .replace(/[üy]/g, 'u');
+  }
+
+  function askAI() {
+    var rawInput = document.getElementById("student-input").value.trim();
+    var input = normalizeText(rawInput);
+    var output = document.getElementById("ai-output");
+    var t = translations[currentLang];
+
+    if (!input) return;
+    output.style.display = "block";
+
+    var bestMatch = null;
+    var minDistance = Infinity;
+
+    for (var i = 0; i < studentData.length; i++) {
+      var student = studentData[i];
+      for (var j = 0; j < student.keys.length; j++) {
+        var key = student.keys[j];
+        var cleanKey = normalizeText(key);
+
+        if (input.includes(cleanKey) || cleanKey.includes(input)) {
+          bestMatch = student;
+          minDistance = 0;
+        } else {
+          var dist = getLevenshteinDistance(input, cleanKey);
+          if (dist < minDistance) {
+            minDistance = dist;
+            bestMatch = student;
+          }
+        }
+      }
+    }
+
+    if (bestMatch && minDistance <= 3) {
+      output.innerHTML = "<strong>" + bestMatch.name + "</strong><br>" + bestMatch.desc;
+    } else {
+      output.innerText = t.unknownStudent;
+    }
+  }
+
+  function renderDutyList() {
+    var listElement = document.getElementById("duty-list");
+    if (!listElement) return;
+    var dutyDays = [
+      { day: "Bazar ertəsi", names: ["Əhmədova Sürəyya", "Cəfərzadə Ramin", "Əmrahov İlkin", "Soltanov Orxan", "Ələkbərov Elgün"] },
+      { day: "Çərşənbə axşamı", names: ["Tağızadə Murad", "Pənahlı Maarif", "İsayeva Nuray", "Muradova Duyğu", "İmanmmədova Həlimə"] },
+      { day: "Çərşənbə", names: ["Qasımlı Tükəzban", "Rəhimov Cəsarət", "Nağıyev Rza", "Haşımov İbrahim", "Əliyev Cahangir"] },
+      { day: "Cümə axşamı", names: ["Məmmədli Cahangir", "İsmayılzadə Hüseyn", "Quliyev Əlövsət", "İsmayılova İnci", "Əliyeva Mədinə"] },
+      { day: "Cümə", names: ["İsmayılova İradə", "Qafarlı Məhəmməd", "Nağıyev Məhəmməd", "Rəcəbli Əsma", "Məmmədov Əli"] }
+    ];
+    var dayIcons = ["✦", "◈", "✿", "⬟", "✧"];
+    var listHtml = "";
+    for (var day = 0; day < dutyDays.length; day++) {
+      listHtml += '<section class="duty-day-card"><h3 class="duty-day-title"><span class="duty-day-icon">' + dayIcons[day] + '</span><span>' + dutyDays[day].day + '</span><span class="duty-count">5 nəfər</span></h3>';
+      for (var j = 0; j < dutyDays[day].names.length; j++) {
+        listHtml += '<div class="duty-student-card"><span class="duty-orb">' + (j + 1) + '</span><span class="duty-student-name">' + dutyDays[day].names[j] + '</span><span class="duty-student-label">8C</span></div>';
+      }
+      listHtml += '</section>';
+    }
+    listElement.innerHTML = listHtml;
+  }
+
+  function switchTab(tabName) {
+    var tabs = ["schedule", "ai", "students", "duty"];
+    for (var i = 0; i < tabs.length; i++) {
+      var tab = document.getElementById(tabs[i] + "-tab");
+      var nav = document.getElementById("nav-" + tabs[i]);
+      if (tab) tab.classList.remove("active");
+      if (nav) nav.classList.remove("active");
+    }
+
+    var selectedTab = document.getElementById(tabName + "-tab");
+    var selectedNav = document.getElementById("nav-" + tabName);
+    if (selectedTab) selectedTab.classList.add("active");
+    if (selectedNav) selectedNav.classList.add("active");
+  }
+
+  function toggleTheme() {
+    document.body.classList.toggle("dark-mode");
+    var isDark = document.body.classList.contains("dark-mode");
+    var t = translations[currentLang];
+    document.getElementById("theme-btn").innerText = isDark ? t.lightBtn : t.darkBtn;
+  }
+
+  function openSettings() {
+    document.getElementById("settings-modal").style.display = "flex";
+  }
+
+  function closeSettings() {
+    document.getElementById("settings-modal").style.display = "none";
+  }
+
+  // Tətbiq açılan kimi cədvəlin və siyahının tam işləməsinə zəmanət verən kod
+  document.addEventListener("DOMContentLoaded", function () {
+    renderSchedule();
+    renderStudentList();
+    renderDutyList();
+    var savedLang = "az"; try { savedLang = localStorage.getItem("8c-language") || "az"; } catch(e) {}
+    changeLanguage(savedLang);
+    initWheel();
+  });
+
+// Name wheel: hər tətbiq açılışında 29 başlanğıc adı qaytarılır; dəyişikliklər yadda saxlanmır.
+var defaultWheelNames = [
+  "Əhmədova Sürəyya", "Cəfərzadə Ramin", "Əmrahov İlkin", "Həmidov Süleyman",
+  "Qasımlı Tükəzban", "Muradova Duyğu", "İmanmmədova Həlimə", "Soltanov Orxan",
+  "Tağızadə Murad", "Qafarlı Məhəmməd", "Haşımov İbrahim", "Ələkbərov Elgün",
+  "Nağıyev Məhəmməd", "Məmmədli Cahangir", "Əliyev Cahangir", "Nağıyev Rza",
+  "İsayeva Nuray", "İsmayılova İnci", "İsmayılzadə Hüseyn", "Rəcəbli Əsma",
+  "Səlimov Turan", "Nəzərli İbrahim", "Məmmədov Əli", "Əliyeva Mədinə",
+  "Quliyev Əlövsət", "Əliyev Rəsul", "Rəhimov Cəsarət", "İradə İsmayılova",
+  "Pənahlı Maarif"
+];
+var wheelNames = defaultWheelNames.slice();
+var wheelAngle = 0;
+var wheelBusy = false;
+var wheelColors = ["#a8edf0","#bdf5d4","#d7efff","#f6e9a9","#cce3ff","#f4d7f5","#c9f4e8","#ffd9c8"];
+function initWheel(){
+  // Hər açılışda standart 29 ad bərpa olunur; əvvəlki saxlanmış siyahılar silinir.
+  wheelNames=defaultWheelNames.slice(); wheelAngle=0;
+  try { localStorage.removeItem("8c-wheel-names"); localStorage.removeItem("8c-wheel-deleted"); } catch(e) {}
+  drawWheel(); renderWheelList();
+}
+function saveWheel(){ /* Dəyişikliklər yadda saxlanmır; növbəti açılışda 29 ad qayıdır. */ }
+function openWheel(){document.getElementById("settings-modal").style.display="none";document.getElementById("wheel-modal").classList.add("open");drawWheel();renderWheelList();}
+function closeWheel(){document.getElementById("wheel-modal").classList.remove("open");}
+function addWheelName(){var input=document.getElementById("wheel-name-input"),name=(input.value||"").trim();if(!name)return;wheelNames.push(name);input.value="";saveWheel();drawWheel();renderWheelList();}
+function deleteWheelName(index){
+  if(wheelBusy || index<0 || index>=wheelNames.length) return;
+  wheelNames.splice(index,1); saveWheel(); drawWheel(); renderWheelList();
+  var result=document.getElementById("wheel-result"); if(result) result.textContent="";
+}
+function renderWheelList(){var list=document.getElementById("wheel-list");if(!list)return;list.innerHTML="";wheelNames.forEach(function(name,i){var row=document.createElement("div");row.className="wheel-name-row";var text=document.createElement("span");text.className="wheel-name";text.textContent=(i+1)+". "+name;var del=document.createElement("button");del.className="wheel-delete";del.type="button";del.title="Sil";del.setAttribute("aria-label","Sil "+name);del.textContent="🗑️";del.onclick=function(){deleteWheelName(i)};row.appendChild(text);row.appendChild(del);list.appendChild(row);});}
+function drawWheel(){var c=document.getElementById("wheel-canvas");if(!c)return;var ctx=c.getContext("2d"),n=wheelNames.length;ctx.clearRect(0,0,c.width,c.height);var cx=c.width/2,cy=c.height/2,r=c.width/2-5;ctx.save();ctx.translate(cx,cy);ctx.rotate(wheelAngle);if(!n){ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.fillStyle="#e7fbff";ctx.fill();ctx.fillStyle="#246577";ctx.font="bold 27px sans-serif";ctx.textAlign="center";ctx.fillText("+ Ad əlavə et",0,8);ctx.restore();return;}var step=Math.PI*2/n;for(var i=0;i<n;i++){var start=-Math.PI/2+i*step,end=start+step;ctx.beginPath();ctx.moveTo(0,0);ctx.arc(0,0,r,start,end);ctx.closePath();ctx.fillStyle=wheelColors[i%wheelColors.length];ctx.fill();ctx.strokeStyle="#ffffff";ctx.lineWidth=4;ctx.stroke();ctx.save();ctx.rotate(start+step/2);ctx.textAlign="right";ctx.textBaseline="middle";ctx.fillStyle="#174b59";var fontSize=Math.max(12,Math.min(21,Math.floor(210/n)));ctx.font="bold "+fontSize+"px sans-serif";var label=wheelNames[i];var max= Math.max(7,Math.floor(24/(n>12?1.4:1)));if(label.length>max)label=label.slice(0,max-1)+"…";ctx.fillText(label,r-18,0);ctx.restore();}ctx.beginPath();ctx.arc(0,0,22,0,Math.PI*2);ctx.fillStyle="#ffffff";ctx.fill();ctx.strokeStyle="#8ddfe4";ctx.lineWidth=5;ctx.stroke();ctx.restore();}
+function spinWheel(){if(wheelBusy)return;var t=translations[currentLang]||translations.az;if(!wheelNames.length){document.getElementById("wheel-result").textContent=t.wheelNoNames||"Çarxda ad yoxdur!";return;}if(wheelNames.length===1){document.getElementById("wheel-result").textContent=(t.wheelWinner||"🎉 Seçilən: ")+wheelNames[0];return;}wheelBusy=true;document.getElementById("wheel-result").textContent="✨ …";var start=wheelAngle,extra=Math.PI*2*(5+Math.random()*4)+Math.random()*Math.PI*2,duration=4200,begin=performance.now();function frame(now){var p=Math.min(1,(now-begin)/duration),ease=1-Math.pow(1-p,4);wheelAngle=start+extra*ease;drawWheel();if(p<1){requestAnimationFrame(frame);}else{wheelBusy=false;var step=Math.PI*2/wheelNames.length;var normalized=(((-wheelAngle)%(Math.PI*2))+(Math.PI*2))%(Math.PI*2);var idx=Math.floor(normalized/step)%wheelNames.length;document.getElementById("wheel-result").textContent=(t.wheelWinner||"🎉 Seçilən: ")+wheelNames[idx];}}requestAnimationFrame(frame);}
+
+document.addEventListener("keydown",function(e){if(e.key==="Enter"&&document.activeElement&&document.activeElement.id==="wheel-name-input"){e.preventDefault();addWheelName();}if(e.key==="Escape")closeWheel();});
+
+</script>
+
+
+<button class="mirror-launch" onclick="openMirror()">🪞 Güzgü 🫧</button>
+<div class="mirror-modal" id="mirror-modal" role="dialog" aria-modal="true" aria-label="Güzgü Modu">
+ <div class="mirror-shell"><div class="mirror-bubbles"><i></i><i></i><i></i><i></i></div>
+  <h2 class="mirror-head">🪞 Güzgü Modu</h2><p class="mirror-desc">Özünü real vaxtda gör — şəkil çəkmirik! 🫧</p>
+  <div class="mirror-view"><video id="mirror-video" autoplay playsinline muted></video><div class="mirror-placeholder" id="mirror-placeholder">🫧<br><strong>Kamera görüntüsü burada görünəcək</strong><br>Başlamaq üçün aşağıdakı düyməyə bas və kamera icazəsi ver.</div></div>
+  <div class="mirror-status" id="mirror-status">Kamera hələ açılmayıb</div>
+  <div class="mirror-controls"><button onclick="startMirror()">📷 Kameranı aç</button><button onclick="flipMirror()">🔄 Ön/arxa</button><button onclick="stopMirror()">⏸️ Dayandır</button><button class="mirror-close" onclick="closeMirror()">✕ Bağla</button></div>
+  <p class="mirror-note">🔒 Kamera yalnız Güzgü Modunu açanda işləyir. Şəkil çəkmə və qeyd etmə funksiyası yoxdur.</p>
+ </div>
+</div>
+<script>
+let mirrorStream=null, mirrorFacing='user';
+function openMirror(){document.getElementById('mirror-modal').classList.add('open');}
+async function startMirror(){
+ const status=document.getElementById('mirror-status'), video=document.getElementById('mirror-video'), placeholder=document.getElementById('mirror-placeholder');
+ if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){status.textContent='Kamera bu mühitdə açılmadı. HTML faylını Chrome-da və ya kamera icazəsini dəstəkləyən APK-da aç.';return;}
+ try{if(mirrorStream)mirrorStream.getTracks().forEach(t=>t.stop());mirrorStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:mirrorFacing},audio:false});video.srcObject=mirrorStream;video.style.display='block';placeholder.style.display='none';status.textContent='🟢 Güzgü aktivdir — canlı görüntü';await video.play();}
+ catch(e){status.textContent=e.name==='NotAllowedError'?'Kamera icazəsi verilmədi. Tətbiq icazələrindən kameraya icazə ver.':'Kamera açıla bilmədi. Səhifəni HTTPS/Chrome üzərindən açmağı yoxla.';}
+}
+function flipMirror(){mirrorFacing=mirrorFacing==='user'?'environment':'user';if(mirrorStream)startMirror();else document.getElementById('mirror-status').textContent='Seçildi: '+(mirrorFacing==='user'?'ön kamera':'arxa kamera')+'. Açmaq üçün “Kameranı aç” bas.';}
+function stopMirror(){if(mirrorStream){mirrorStream.getTracks().forEach(t=>t.stop());mirrorStream=null;}const v=document.getElementById('mirror-video');v.srcObject=null;v.style.display='none';document.getElementById('mirror-placeholder').style.display='block';document.getElementById('mirror-status').textContent='Kamera dayandırılıb';}
+function closeMirror(){stopMirror();document.getElementById('mirror-modal').classList.remove('open');}
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&mirrorStream)stopMirror();});
+</script>
+
+</body>
+</html>
